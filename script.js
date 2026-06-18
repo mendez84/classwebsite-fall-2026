@@ -12,7 +12,7 @@ const translations = {
     menuClose: "Close menu",
     theme: "Change color theme",
     eyebrow: "Math, technology, and better questions",
-    heroTitle: "Welcome. You belong in math class.",
+    heroTitle: "Welcome.<br>You belong in math class.",
     heroCopy: "I’m Mr. Mendez. This is our classroom hub for weekly assignments, course resources, and the support you need to keep moving forward.",
     findClass: "Find your class",
     contactMe: "Contact Mr. Mendez",
@@ -49,7 +49,7 @@ const translations = {
     menuClose: "Cerrar menú",
     theme: "Cambiar el tema de color",
     eyebrow: "Matemáticas, tecnología y mejores preguntas",
-    heroTitle: "Bienvenidos. Aquí todos pertenecen.",
+    heroTitle: "Bienvenidos.<br>Aquí todos pertenecen.",
     heroCopy: "Soy el Sr. Mendez. Este es nuestro centro de clase para tareas semanales, recursos del curso y el apoyo necesario para seguir avanzando.",
     findClass: "Encuentra tu clase",
     contactMe: "Contactar al Sr. Mendez",
@@ -100,7 +100,7 @@ function applyLanguage() {
   document.documentElement.lang = state.language;
   document.querySelectorAll("[data-i18n]").forEach((element) => {
     const value = copy[element.dataset.i18n];
-    if (value) element.textContent = value;
+    if (value) element.innerHTML = value;
   });
   document.querySelectorAll("[data-language-toggle]").forEach((button) => {
     button.textContent = copy.languageName;
