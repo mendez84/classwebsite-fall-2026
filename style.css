@@ -114,6 +114,7 @@ main { min-height: 66vh; }
 .eyebrow::before { content: ""; width: 28px; height: 3px; border-radius: 2px; background: var(--accent); }
 h1, h2, h3 { margin-top: 0; line-height: 1.12; letter-spacing: -.035em; }
 h1 { margin-bottom: 20px; font-size: clamp(2.55rem, 7vw, 5.5rem); max-width: 11ch; }
+.hero h1 { max-width: none; }
 .hero-copy { max-width: 62ch; margin: 0; color: var(--muted); font-size: clamp(1.03rem, 2vw, 1.2rem); }
 .hero-actions { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 28px; }
 .button { min-height: 46px; display: inline-flex; align-items: center; justify-content: center; gap: 8px; padding: 11px 18px; border: 1px solid transparent; border-radius: 12px; font-weight: 800; text-decoration: none; cursor: pointer; transition: background 0.15s ease, color 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease; }
@@ -124,28 +125,26 @@ h1 { margin-bottom: 20px; font-size: clamp(2.55rem, 7vw, 5.5rem); max-width: 11c
 
 .math-card { position: relative; min-height: 380px; overflow: hidden; border: 1px solid var(--line); border-radius: 30px; background: var(--surface); box-shadow: var(--shadow); }
 .math-grid { position: absolute; inset: 0; opacity: .65; background-image: linear-gradient(var(--line) 1px, transparent 1px), linear-gradient(90deg, var(--line) 1px, transparent 1px); background-size: 34px 34px; mask-image: linear-gradient(to bottom right, #000, transparent 85%); }
-.orbit { position: absolute; border: 2px solid color-mix(in srgb, var(--brand) 32%, transparent); border-radius: 50%; }
-.orbit.one { width: 230px; height: 230px; top: 60px; left: 74px; }
-.orbit.two { width: 160px; height: 160px; top: 95px; left: 109px; transform: rotate(28deg); border-radius: 48% 52% 44% 56%; }
 .formula { position: absolute; font-family: ui-monospace, SFMono-Regular, Menlo, monospace; color: var(--brand-strong); font-weight: 750; }
 .formula.a { top: 36px; right: 32px; font-size: 1.1rem; }
-.formula.b { bottom: 34px; left: 30px; font-size: 1.35rem; }
-.formula.c { top: 48%; left: 50%; transform: translate(-50%, -50%); width: 98px; height: 98px; display: grid; place-items: center; border-radius: 28px; background: var(--brand); color: var(--on-brand); font-size: 2.2rem; box-shadow: 0 18px 34px color-mix(in srgb, var(--brand) 28%, transparent); }
+.formula.b { bottom: 34px; left: 30px; font-size: 1.15rem; }
+.axis-x { position: absolute; left: 0; right: 0; height: 1.5px; top: 58%; background: color-mix(in srgb, var(--brand) 22%, transparent); }
+.axis-y { position: absolute; top: 0; bottom: 0; width: 1.5px; left: 33%; background: color-mix(in srgb, var(--brand) 22%, transparent); }
+.slope-line { position: absolute; width: 420px; height: 2.5px; left: 33%; top: 56%; transform-origin: 0 50%; transform: rotate(-36deg); background: var(--brand); border-radius: 2px; animation: slope-glow 4s ease-in-out infinite; }
+.rise-seg { position: absolute; width: 2px; height: 34%; left: 78%; top: 22%; background: var(--accent); opacity: 0.75; }
+.run-seg { position: absolute; height: 2px; width: 45%; left: 33%; top: 56%; background: var(--accent); opacity: 0.75; }
+.y-dot { position: absolute; width: 14px; height: 14px; border-radius: 50%; background: var(--accent); box-shadow: 0 0 0 5px color-mix(in srgb, var(--accent) 18%, transparent); left: calc(33% - 7px); top: calc(56% - 7px); animation: ydot-pulse 3.2s ease-in-out infinite; }
+.p-dot { position: absolute; width: 11px; height: 11px; border-radius: 50%; background: var(--brand); box-shadow: 0 0 0 4px color-mix(in srgb, var(--brand) 20%, transparent); left: calc(78% - 5.5px); top: calc(22% - 5.5px); }
+.formula.c { top: 52%; left: calc(33% + 14px); transform: none; width: auto; height: auto; padding: 4px 11px; border-radius: 8px; background: var(--accent); color: #fff; font-size: 0.9rem; font-weight: 850; display: inline-flex; align-items: center; box-shadow: none; animation: none; }
 
 /* Math card ambient animations */
-@keyframes orbit-spin       { to   { transform: rotate(360deg); } }
-@keyframes orbit-spin-two   { from { transform: rotate(28deg); } to { transform: rotate(388deg); } }
+@keyframes slope-glow { 0%, 100% { opacity: 1; } 50% { opacity: 0.7; } }
 @keyframes formula-float-a  { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-7px); } }
 @keyframes formula-float-b  { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-9px); } }
-@keyframes pi-pulse         { 0%, 100% { transform: translate(-50%, -50%) scale(1);    box-shadow: 0 18px 34px color-mix(in srgb, var(--brand) 28%, transparent); }
-                               50%      { transform: translate(-50%, -50%) scale(1.05); box-shadow: 0 24px 48px color-mix(in srgb, var(--brand) 46%, transparent); } }
+@keyframes ydot-pulse { 0%, 100% { box-shadow: 0 0 0 5px color-mix(in srgb, var(--accent) 18%, transparent); } 50% { box-shadow: 0 0 0 13px color-mix(in srgb, var(--accent) 6%, transparent); } }
 
-.orbit { will-change: transform; }
-.orbit.one  { animation: orbit-spin     30s linear   infinite; transform-origin: center; }
-.orbit.two  { animation: orbit-spin-two 20s linear   infinite; transform-origin: center; }
 .formula.a  { animation: formula-float-a  4.5s ease-in-out infinite; }
 .formula.b  { animation: formula-float-b  5.5s ease-in-out infinite 1.2s; }
-.formula.c  { animation: pi-pulse         3.5s ease-in-out infinite; }
 
 .section { padding: 40px 0 72px; }
 .section-tinted { border-block: 1px solid var(--line); background: color-mix(in srgb, var(--surface-2) 66%, transparent); }
