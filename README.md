@@ -41,4 +41,4 @@ Navigation and essential family information support English and Spanish. Spanish
 
 ## Before publishing
 
-Confirm the real Fall 2026 course schedule and dates, replace all sample week content, review Spanish copy, verify every external link, test at phone/tablet/desktop sizes, and update canonical URLs if the deployment address changes.
+Confirm the real Fall 2026 dates for Financial Algebra and Integrated Math 1, replace all sample week content, review Spanish copy, verify every external link, test at phone/tablet/desktop sizes, and update canonical URLs if the deployment address changes.
