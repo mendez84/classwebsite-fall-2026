@@ -1,53 +1,44 @@
-# Mr. Mendez — Teacher Portfolio Site
+# Mr. Mendez Math — Fall 2026 local redesign
 
-Personal website and classroom hub for Mario Mendez, Math Teacher at Palm Springs Unified School District.
+This is an isolated local redesign of the public classroom hub. It has **no Git remote** and cannot affect the current live website unless a remote is deliberately added later.
 
-Built with plain HTML, CSS, and JavaScript — no frameworks, no dependencies, no build tools. Edit any file with any editor or AI assistant.
+## Preview locally
 
-## Structure
+From this folder, run:
 
-```
-mendez-site/
-├── index.html       ← All page content and sections
-├── style.css        ← All styles and design tokens
-├── script.js        ← Nav, animations, portfolio toggle
-├── assets/          ← Images and media (add yours here)
-└── README.md        ← This file
+```bash
+python3 -m http.server 8000
 ```
 
-## How to customize
+Then open `http://localhost:8000`.
 
-**Change the accent color:**  
-Open `style.css` and change `--accent: #2979d9;` to any hex color.
+## Weekly updates
 
-**Add your photo:**  
-Drop your image in the `assets/` folder, then in `index.html` replace the placeholder div with:
-```html
-<img src="assets/your-photo.jpg" alt="Mr. Mendez" style="width:100%; border-radius: 12px;" />
+Shared announcements and the public email live in `data/site.json`. Weekly assignments live in one file per course under `data/courses/`.
+
+Each course week has:
+
+- a unique `id`;
+- a label and date range;
+- a `current` or `archived` status;
+- daily titles, summaries, and optional HTTPS assignment links.
+
+Ask Codex or Claude to update these JSON files, then run:
+
+```bash
+node scripts/validate-content.mjs
 ```
 
-**Update class info:**  
-In `index.html`, find the `announcement` div and update the text for the current class/session.
+Only one week per course may be marked `current`. Move the previous week to `archived` when publishing a new one.
 
-**Turn on the Portfolio section:**  
-The portfolio section is hidden by default (only shows during job application season).  
-To activate it, visit your site with `?portfolio=true` at the end of the URL.  
-Or open `index.html` and change `<body>` to `<body class="portfolio-mode">`.
+## Privacy rules
 
-## Hosting on GitHub Pages
+Never add student names, student email addresses, grades, student work without permission, Google Classroom join codes, or private Classroom URLs. Public course pages may link to the general Google Classroom sign-in page.
 
-1. Push this folder to a GitHub repo named `yourusername.github.io`
-2. Go to Settings → Pages → Source: Deploy from branch → main
-3. Your site will be live at `https://yourusername.github.io`
+## Translation workflow
 
-For a custom domain (like mrmendez.com):
-- Add a file called `CNAME` to the repo containing just your domain name
-- Point your domain's DNS to GitHub Pages (Namecheap instructions vary)
+Navigation and essential family information support English and Spanish. Spanish text in `script.js` is an AI-assisted draft and must be reviewed by Mr. Mendez before any public launch. Weekly assignment details remain in English.
 
-## Built with intention
+## Before publishing
 
-- No frameworks or libraries
-- Mobile responsive
-- Dark mode by design
-- Accessible and fast
-- Edit with any LLM or by hand
+Confirm the real Fall 2026 course schedule and dates, replace all sample week content, review Spanish copy, verify every external link, test at phone/tablet/desktop sizes, and update canonical URLs if the deployment address changes.

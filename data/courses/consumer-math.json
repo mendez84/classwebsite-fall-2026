@@ -1,0 +1,22 @@
+{
+  "name": "Consumer Math",
+  "nameEs": "Matemáticas del Consumidor",
+  "description": "Practical mathematics for everyday decisions, financial literacy, and real-world problem solving.",
+  "descriptionEs": "Matemáticas prácticas para decisiones cotidianas, educación financiera y resolución de problemas del mundo real.",
+  "weeks": [
+    {
+      "id": "2026-fall-week-01",
+      "label": "Week 1 — Welcome to Consumer Math",
+      "startDate": "2026-08-10",
+      "endDate": "2026-08-14",
+      "status": "current",
+      "days": [
+        { "dayLabel": "Monday", "dateLabel": "Aug 10", "title": "Course welcome", "summary": "Meet the class, review how the course works, and begin our first real-world math discussion." },
+        { "dayLabel": "Tuesday", "dateLabel": "Aug 11", "title": "What does it cost?", "summary": "Explore how estimation and unit rates influence everyday choices." },
+        { "dayLabel": "Wednesday", "dateLabel": "Aug 12", "title": "Budget thinking", "summary": "Build a simple needs-and-wants budget model." },
+        { "dayLabel": "Thursday", "dateLabel": "Aug 13", "title": "Comparing options", "summary": "Use percent and unit price to compare purchasing decisions." },
+        { "dayLabel": "Friday", "dateLabel": "Aug 14", "title": "Week 1 reflection", "summary": "Review the week and explain one decision using mathematical evidence." }
+      ]
+    }
+  ]
+}

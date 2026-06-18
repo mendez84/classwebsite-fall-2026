@@ -1,0 +1,22 @@
+{
+  "name": "Integrated Math 2",
+  "nameEs": "Matemáticas Integradas 2",
+  "description": "Extend algebraic and geometric reasoning through functions, proof, probability, and modeling.",
+  "descriptionEs": "Amplía el razonamiento algebraico y geométrico mediante funciones, demostración, probabilidad y modelación.",
+  "weeks": [
+    {
+      "id": "2026-fall-week-01",
+      "label": "Week 1 — Evidence and mathematical arguments",
+      "startDate": "2026-08-10",
+      "endDate": "2026-08-14",
+      "status": "current",
+      "days": [
+        { "dayLabel": "Monday", "dateLabel": "Aug 10", "title": "Course welcome", "summary": "Review class routines and what makes a mathematical argument convincing." },
+        { "dayLabel": "Tuesday", "dateLabel": "Aug 11", "title": "Claims and evidence", "summary": "Evaluate examples, counterexamples, and incomplete reasoning." },
+        { "dayLabel": "Wednesday", "dateLabel": "Aug 12", "title": "Building an argument", "summary": "Organize observations into a clear chain of reasoning." },
+        { "dayLabel": "Thursday", "dateLabel": "Aug 13", "title": "Representations as evidence", "summary": "Use diagrams, tables, and algebra to support a conclusion." },
+        { "dayLabel": "Friday", "dateLabel": "Aug 14", "title": "Reasoning check", "summary": "Revise an argument for clarity and precision." }
+      ]
+    }
+  ]
+}

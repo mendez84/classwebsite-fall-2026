@@ -1,0 +1,11 @@
+{
+  "term": "Fall 2026",
+  "announcement": "Fall 2026 course information will be posted here before the first day of school.",
+  "announcementEs": "La información de los cursos de otoño de 2026 se publicará aquí antes del primer día de clases.",
+  "contact": { "email": "mmendez1@psusd.us" },
+  "courses": [
+    { "name": "Consumer Math", "nameEs": "Matemáticas del Consumidor", "shortLabel": "$", "url": "consumer-math.html", "description": "Everyday mathematics, financial literacy, and real-world decision making.", "descriptionEs": "Matemáticas cotidianas, educación financiera y toma de decisiones del mundo real." },
+    { "name": "Integrated Math 1", "nameEs": "Matemáticas Integradas 1", "shortLabel": "IM1", "url": "integrated-math-1.html", "description": "Algebra, functions, geometry, statistics, and mathematical reasoning.", "descriptionEs": "Álgebra, funciones, geometría, estadística y razonamiento matemático." },
+    { "name": "Integrated Math 2", "nameEs": "Matemáticas Integradas 2", "shortLabel": "IM2", "url": "integrated-math-2.html", "description": "Functions, proof, probability, geometry, and mathematical modeling.", "descriptionEs": "Funciones, demostración, probabilidad, geometría y modelación matemática." }
+  ]
+}
