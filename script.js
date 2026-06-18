@@ -1,3 +1,6 @@
+/* Mark document as JS-capable immediately so reveal CSS activates */
+document.documentElement.classList.add('js');
+
 const translations = {
   en: {
     skip: "Skip to main content",
@@ -182,7 +185,7 @@ function safeExternalLink(url) {
 function renderCourses(courses) {
   document.querySelectorAll("[data-course-grid]").forEach((grid) => {
     grid.innerHTML = courses.map((course, index) => `
-      <a class="course-card reveal" href="${course.url}" style="animation-delay:${index * 70}ms">
+      <a class="course-card reveal" href="${course.url}" style="transition-delay:${index * 80}ms">
         <span class="course-number" aria-hidden="true">${course.shortLabel}</span>
         <h3>${state.language === "es" ? course.nameEs : course.name}</h3>
         <p>${state.language === "es" ? course.descriptionEs : course.description}</p>
@@ -251,6 +254,24 @@ async function loadCourse() {
   }
 }
 
+function setupReveal() {
+  /* Graceful fallback for very old browsers */
+  if (!('IntersectionObserver' in window)) {
+    document.querySelectorAll('.reveal').forEach((el) => el.classList.add('is-revealed'));
+    return;
+  }
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach((entry) => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('is-revealed');
+        observer.unobserve(entry.target); /* fire once, then stop watching */
+      }
+    });
+  }, { threshold: 0.1, rootMargin: '0px 0px -32px 0px' });
+
+  document.querySelectorAll('.reveal:not(.is-revealed)').forEach((el) => observer.observe(el));
+}
+
 function setYear() {
   document.querySelectorAll("[data-year]").forEach((element) => { element.textContent = new Date().getFullYear(); });
 }
@@ -260,6 +281,8 @@ document.addEventListener("DOMContentLoaded", async () => {
   applyLanguage();
   setupControls();
   setYear();
+  setupReveal(); /* catch static .reveal elements already in DOM (hero, etc.) */
   await Promise.all([loadSiteContent(), loadCourse()]);
   applyLanguage();
+  setupReveal(); /* catch .reveal elements added by async content (course cards, etc.) */
 });
