@@ -23,6 +23,10 @@ const translations = {
     resourcesTitle: "Tools for learning",
     resourcesCopy: "Reliable places to practice, graph, review, and submit work.",
     viewResources: "View all resources →",
+    graphHint: "Drag orange b or blue m. The equation updates.",
+    graphSlopePoint: "Slope handle. Use the up and down arrow keys.",
+    graphInterceptPoint: "Y-intercept handle. Use the up and down arrow keys.",
+    graphReset: "Reset",
     currentWeek: "Current week",
     priorWeeks: "Previous weeks",
     assignment: "Open assignment ↗",
@@ -60,6 +64,10 @@ const translations = {
     resourcesTitle: "Herramientas para aprender",
     resourcesCopy: "Lugares confiables para practicar, graficar, repasar y entregar trabajos.",
     viewResources: "Ver todos los recursos →",
+    graphHint: "Arrastra b naranja o m azul. La ecuación se actualiza.",
+    graphSlopePoint: "Control de la pendiente. Usa las flechas arriba y abajo.",
+    graphInterceptPoint: "Control de la intersección con y. Usa las flechas arriba y abajo.",
+    graphReset: "Restablecer",
     currentWeek: "Semana actual",
     priorWeeks: "Semanas anteriores",
     assignment: "Abrir tarea ↗",
@@ -110,6 +118,8 @@ function applyLanguage() {
     const expanded = button.getAttribute("aria-expanded") === "true";
     button.setAttribute("aria-label", expanded ? copy.menuClose : copy.menuOpen);
   });
+  document.querySelectorAll("[data-math-interactive] .p-dot").forEach((point) => { point.setAttribute("aria-label", copy.graphSlopePoint); });
+  document.querySelectorAll("[data-math-interactive] .y-dot").forEach((point) => { point.setAttribute("aria-label", copy.graphInterceptPoint); });
   if (state.site) {
     document.querySelectorAll("[data-announcement-text]").forEach((element) => {
       element.textContent = state.language === "es" ? state.site.announcementEs : state.site.announcement;
@@ -272,6 +282,178 @@ function setupReveal() {
   document.querySelectorAll('.reveal:not(.is-revealed)').forEach((el) => observer.observe(el));
 }
 
+function setupMathInteraction() {
+  const card = document.querySelector("[data-math-interactive]");
+  const slopeHandle = card?.querySelector(".p-dot");
+  const interceptHandle = card?.querySelector(".y-dot");
+  const equation = card?.querySelector("[data-equation]");
+  const slopeReadout = card?.querySelector("[data-slope-readout]");
+  const interceptReadout = card?.querySelector("[data-intercept-readout]");
+  const resetButton = card?.querySelector("[data-math-reset]");
+  if (!card || !slopeHandle || !interceptHandle || !equation || !slopeReadout || !interceptReadout || !resetButton) return;
+
+  const limits = Object.freeze({
+    interceptMin: -2,
+    interceptMax: 2,
+    slopeMin: -1.25,
+    slopeMax: 1.25,
+    interceptStep: 0.5,
+    slopeStep: 0.25,
+    pointXUnits: 3,
+    margin: 20
+  });
+  const graph = { slope: 0.75, intercept: 0 };
+  let frame = 0;
+  let activeHandle = null;
+
+  const clamp = (value, min, max) => Math.min(max, Math.max(min, value));
+  const snap = (value, step) => Math.round(value / step) * step;
+  const formatNumber = (value) => {
+    const safeValue = Math.abs(value) < 0.005 ? 0 : value;
+    return Number(safeValue.toFixed(2)).toString();
+  };
+
+  const geometry = () => {
+    const bounds = card.getBoundingClientRect();
+    const unit = clamp(Math.min(bounds.width / 11, bounds.height / 9), 24, 34);
+    const axisX = bounds.width * 0.33;
+    const zeroY = bounds.height * 0.58;
+    const mathYMax = (zeroY - limits.margin) / unit;
+    const mathYMin = (zeroY - (bounds.height - limits.margin)) / unit;
+    return { bounds, unit, axisX, zeroY, mathYMin, mathYMax };
+  };
+
+  const render = () => {
+    const plot = geometry();
+    const interceptMin = Math.max(limits.interceptMin, plot.mathYMin);
+    const interceptMax = Math.min(limits.interceptMax, plot.mathYMax);
+    graph.intercept = clamp(snap(graph.intercept, limits.interceptStep), interceptMin, interceptMax);
+
+    const rawSlopeMin = Math.max(limits.slopeMin, (plot.mathYMin - graph.intercept) / limits.pointXUnits);
+    const rawSlopeMax = Math.min(limits.slopeMax, (plot.mathYMax - graph.intercept) / limits.pointXUnits);
+    const slopeMin = Math.ceil(rawSlopeMin / limits.slopeStep) * limits.slopeStep;
+    const slopeMax = Math.floor(rawSlopeMax / limits.slopeStep) * limits.slopeStep;
+    graph.slope = clamp(snap(graph.slope, limits.slopeStep), slopeMin, slopeMax);
+
+    const interceptY = plot.zeroY - graph.intercept * plot.unit;
+    const pointX = plot.axisX + limits.pointXUnits * plot.unit;
+    const pointMathY = graph.intercept + graph.slope * limits.pointXUnits;
+    const pointY = plot.zeroY - pointMathY * plot.unit;
+    const riseTop = Math.min(interceptY, pointY);
+    const riseHeight = Math.abs(interceptY - pointY);
+
+    const leftMathX = -plot.axisX / plot.unit;
+    const rightMathX = (plot.bounds.width - plot.axisX) / plot.unit;
+    const lineStartY = plot.zeroY - (graph.intercept + graph.slope * leftMathX) * plot.unit;
+    const lineEndY = plot.zeroY - (graph.intercept + graph.slope * rightMathX) * plot.unit;
+    const lineDeltaY = lineEndY - lineStartY;
+
+    card.style.setProperty("--grid-size", `${plot.unit}px`);
+    card.style.setProperty("--axis-x", `${plot.axisX}px`);
+    card.style.setProperty("--zero-y", `${plot.zeroY}px`);
+    card.style.setProperty("--intercept-y", `${interceptY}px`);
+    card.style.setProperty("--point-x", `${pointX}px`);
+    card.style.setProperty("--point-y", `${pointY}px`);
+    card.style.setProperty("--run-width", `${pointX - plot.axisX}px`);
+    card.style.setProperty("--rise-top", `${riseTop}px`);
+    card.style.setProperty("--rise-height", `${riseHeight}px`);
+    card.style.setProperty("--line-start-y", `${lineStartY}px`);
+    card.style.setProperty("--line-length", `${Math.hypot(plot.bounds.width, lineDeltaY)}px`);
+    card.style.setProperty("--line-angle", `${Math.atan2(lineDeltaY, plot.bounds.width)}rad`);
+
+    const slopeText = formatNumber(graph.slope);
+    const interceptText = formatNumber(graph.intercept);
+    const interceptSign = graph.intercept < 0 ? "−" : "+";
+    equation.textContent = `y = ${slopeText}x ${interceptSign} ${formatNumber(Math.abs(graph.intercept))}`;
+    slopeReadout.textContent = `m = Δy / Δx = ${slopeText}`;
+    interceptReadout.textContent = `b = ${interceptText}`;
+
+    slopeHandle.setAttribute("aria-valuemin", formatNumber(slopeMin));
+    slopeHandle.setAttribute("aria-valuemax", formatNumber(slopeMax));
+    slopeHandle.setAttribute("aria-valuenow", slopeText);
+    slopeHandle.setAttribute("aria-valuetext", `m = ${slopeText}`);
+    interceptHandle.setAttribute("aria-valuemin", formatNumber(interceptMin));
+    interceptHandle.setAttribute("aria-valuemax", formatNumber(interceptMax));
+    interceptHandle.setAttribute("aria-valuenow", interceptText);
+    interceptHandle.setAttribute("aria-valuetext", `b = ${interceptText}`);
+  };
+
+  const updateFromPointer = (clientY) => {
+    const plot = geometry();
+    const localY = clamp(clientY - plot.bounds.top, limits.margin, plot.bounds.height - limits.margin);
+    const mathY = (plot.zeroY - localY) / plot.unit;
+    if (activeHandle === interceptHandle) graph.intercept = snap(mathY, limits.interceptStep);
+    if (activeHandle === slopeHandle) graph.slope = snap((mathY - graph.intercept) / limits.pointXUnits, limits.slopeStep);
+    render();
+  };
+
+  const queuePointerUpdate = (event) => {
+    const clientY = event.clientY;
+    cancelAnimationFrame(frame);
+    frame = requestAnimationFrame(() => updateFromPointer(clientY));
+  };
+
+  const startDragging = (handle, event) => {
+    activeHandle = handle;
+    handle.classList.add("is-active");
+    handle.setPointerCapture(event.pointerId);
+    card.classList.add("is-interacting");
+    queuePointerUpdate(event);
+  };
+
+  interceptHandle.addEventListener("pointerdown", (event) => startDragging(interceptHandle, event));
+  slopeHandle.addEventListener("pointerdown", (event) => startDragging(slopeHandle, event));
+  card.addEventListener("pointermove", (event) => {
+    if (activeHandle) queuePointerUpdate(event);
+  });
+  card.addEventListener("mousemove", (event) => {
+    if (activeHandle) queuePointerUpdate(event);
+  });
+  const stopDragging = (event) => {
+    if (!activeHandle) return;
+    const handle = activeHandle;
+    activeHandle = null;
+    handle.classList.remove("is-active");
+    if (handle.hasPointerCapture(event.pointerId)) handle.releasePointerCapture(event.pointerId);
+    card.classList.remove("is-interacting");
+  };
+  [interceptHandle, slopeHandle].forEach((handle) => {
+    handle.addEventListener("pointerup", stopDragging);
+    handle.addEventListener("pointercancel", stopDragging);
+    handle.addEventListener("lostpointercapture", () => {
+      handle.classList.remove("is-active");
+      activeHandle = null;
+      card.classList.remove("is-interacting");
+    });
+    handle.addEventListener("keydown", (event) => {
+      const keys = ["ArrowLeft", "ArrowDown", "ArrowRight", "ArrowUp", "Home", "End"];
+      if (!keys.includes(event.key)) return;
+      event.preventDefault();
+      const direction = ["ArrowRight", "ArrowUp"].includes(event.key) ? 1 : -1;
+      if (handle === interceptHandle) {
+        if (event.key === "Home") graph.intercept = limits.interceptMin;
+        else if (event.key === "End") graph.intercept = limits.interceptMax;
+        else graph.intercept += direction * limits.interceptStep;
+      } else {
+        if (event.key === "Home") graph.slope = limits.slopeMin;
+        else if (event.key === "End") graph.slope = limits.slopeMax;
+        else graph.slope += direction * limits.slopeStep;
+      }
+      render();
+    });
+  });
+
+  resetButton.addEventListener("click", () => {
+    graph.slope = 0.75;
+    graph.intercept = 0;
+    render();
+  });
+
+  if ("ResizeObserver" in window) new ResizeObserver(render).observe(card);
+  else window.addEventListener("resize", render, { passive: true });
+  render();
+}
+
 function setYear() {
   document.querySelectorAll("[data-year]").forEach((element) => { element.textContent = new Date().getFullYear(); });
 }
@@ -280,6 +462,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   applyTheme();
   applyLanguage();
   setupControls();
+  setupMathInteraction();
   setYear();
   setupReveal(); /* catch static .reveal elements already in DOM (hero, etc.) */
   await Promise.all([loadSiteContent(), loadCourse()]);

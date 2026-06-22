@@ -123,19 +123,32 @@ h1 { margin-bottom: 20px; font-size: clamp(2.55rem, 7vw, 5.5rem); max-width: 11c
 .button-secondary { border-color: var(--line); background: var(--surface); color: var(--ink); }
 .button-secondary:hover { border-color: var(--brand); color: var(--brand-strong); }
 
-.math-card { position: relative; min-height: 380px; overflow: hidden; border: 1px solid var(--line); border-radius: 30px; background: var(--surface); box-shadow: var(--shadow); }
-.math-grid { position: absolute; inset: 0; opacity: .65; background-image: linear-gradient(var(--line) 1px, transparent 1px), linear-gradient(90deg, var(--line) 1px, transparent 1px); background-size: 34px 34px; mask-image: linear-gradient(to bottom right, #000, transparent 85%); }
-.formula { position: absolute; font-family: ui-monospace, SFMono-Regular, Menlo, monospace; color: var(--brand-strong); font-weight: 750; }
-.formula.a { top: 36px; right: 32px; font-size: 1.1rem; }
-.formula.b { bottom: 34px; left: 30px; font-size: 1.15rem; }
-.axis-x { position: absolute; left: 0; right: 0; height: 1.5px; top: 58%; background: color-mix(in srgb, var(--brand) 22%, transparent); }
-.axis-y { position: absolute; top: 0; bottom: 0; width: 1.5px; left: 33%; background: color-mix(in srgb, var(--brand) 22%, transparent); }
-.slope-line { position: absolute; width: 420px; height: 2.5px; left: 33%; top: 56%; transform-origin: 0 50%; transform: rotate(-36deg); background: var(--brand); border-radius: 2px; animation: slope-glow 4s ease-in-out infinite; }
-.rise-seg { position: absolute; width: 2px; height: 34%; left: 78%; top: 22%; background: var(--accent); opacity: 0.75; }
-.run-seg { position: absolute; height: 2px; width: 45%; left: 33%; top: 56%; background: var(--accent); opacity: 0.75; }
-.y-dot { position: absolute; width: 14px; height: 14px; border-radius: 50%; background: var(--accent); box-shadow: 0 0 0 5px color-mix(in srgb, var(--accent) 18%, transparent); left: calc(33% - 7px); top: calc(56% - 7px); animation: ydot-pulse 3.2s ease-in-out infinite; }
-.p-dot { position: absolute; width: 11px; height: 11px; border-radius: 50%; background: var(--brand); box-shadow: 0 0 0 4px color-mix(in srgb, var(--brand) 20%, transparent); left: calc(78% - 5.5px); top: calc(22% - 5.5px); }
-.formula.c { top: 52%; left: calc(33% + 14px); transform: none; width: auto; height: auto; padding: 4px 11px; border-radius: 8px; background: var(--accent); color: #fff; font-size: 0.9rem; font-weight: 850; display: inline-flex; align-items: center; box-shadow: none; animation: none; }
+.math-card { --grid-size: 34px; --axis-x: 33%; --zero-y: 58%; --intercept-y: 58%; --point-x: 78%; --point-y: 28%; --line-start-y: 85%; --line-length: 560px; --line-angle: -36deg; --run-width: 45%; --rise-top: 28%; --rise-height: 30%; position: relative; min-height: 380px; overflow: hidden; border: 1px solid var(--line); border-radius: 30px; background: var(--surface); box-shadow: var(--shadow); }
+.math-grid { position: absolute; inset: 0; opacity: .65; background-image: linear-gradient(var(--line) 1px, transparent 1px), linear-gradient(90deg, var(--line) 1px, transparent 1px); background-size: var(--grid-size) var(--grid-size); mask-image: linear-gradient(to bottom right, #000, transparent 85%); }
+.formula { z-index: 2; position: absolute; font-family: ui-monospace, SFMono-Regular, Menlo, monospace; color: var(--brand-strong); font-weight: 750; }
+.formula.a { top: 28px; right: 24px; max-width: calc(100% - 130px); padding: 5px 8px; border-radius: 8px; background: color-mix(in srgb, var(--surface) 88%, transparent); font-size: clamp(.9rem, 2vw, 1.08rem); }
+.formula.b { bottom: 28px; left: 24px; max-width: 52%; padding: 5px 8px; border-radius: 8px; background: color-mix(in srgb, var(--surface) 88%, transparent); font-size: clamp(.72rem, 1.8vw, .9rem); }
+.axis-x { position: absolute; left: 0; right: 0; height: 1.5px; top: var(--zero-y); background: color-mix(in srgb, var(--brand) 22%, transparent); }
+.axis-y { position: absolute; top: 0; bottom: 0; width: 1.5px; left: var(--axis-x); background: color-mix(in srgb, var(--brand) 22%, transparent); }
+.slope-line { position: absolute; width: var(--line-length); height: 2.5px; left: 0; top: var(--line-start-y); transform-origin: 0 50%; transform: rotate(var(--line-angle)); background: var(--brand); border-radius: 2px; }
+.rise-seg { position: absolute; width: 2px; height: var(--rise-height); left: var(--point-x); top: var(--rise-top); background: var(--accent); opacity: .78; transition: opacity .16s ease, width .16s ease; }
+.run-seg { position: absolute; height: 2px; width: var(--run-width); left: var(--axis-x); top: var(--intercept-y); background: var(--accent); opacity: .78; transition: opacity .16s ease, height .16s ease; }
+.graph-handle { z-index: 4; position: absolute; width: 38px; height: 38px; padding: 0; border: 0; border-radius: 50%; cursor: ns-resize; touch-action: none; transition: background .16s ease, transform .16s ease; }
+.graph-handle::after { content: ""; position: absolute; inset: 12px; border-radius: 50%; }
+.y-dot { left: calc(var(--axis-x) - 19px); top: calc(var(--intercept-y) - 19px); background: color-mix(in srgb, var(--accent) 15%, transparent); }
+.y-dot::after { background: var(--accent); box-shadow: 0 0 0 4px color-mix(in srgb, var(--accent) 20%, transparent); }
+.p-dot { left: calc(var(--point-x) - 19px); top: calc(var(--point-y) - 19px); background: color-mix(in srgb, var(--brand) 14%, transparent); }
+.p-dot::after { background: var(--brand); box-shadow: 0 0 0 4px color-mix(in srgb, var(--brand) 20%, transparent); }
+.graph-handle:hover, .graph-handle:focus-visible { transform: scale(1.08); }
+.y-dot:hover, .y-dot:focus-visible { background: color-mix(in srgb, var(--accent) 26%, transparent); }
+.p-dot:hover, .p-dot:focus-visible { background: color-mix(in srgb, var(--brand) 24%, transparent); }
+.graph-handle.is-active { cursor: grabbing; transform: scale(1.14); }
+.math-card.is-interacting .rise-seg { width: 3px; opacity: 1; }
+.math-card.is-interacting .run-seg { height: 3px; opacity: 1; }
+.math-hint { z-index: 2; position: absolute; right: 18px; bottom: 18px; max-width: 190px; padding: 7px 10px; border: 1px solid var(--line); border-radius: 14px; background: color-mix(in srgb, var(--surface) 90%, transparent); color: var(--muted); font-size: .7rem; font-weight: 750; line-height: 1.25; text-align: center; pointer-events: none; }
+.math-reset { z-index: 5; position: absolute; top: 18px; left: 18px; min-height: 32px; padding: 5px 10px; border: 1px solid var(--line); border-radius: 999px; background: color-mix(in srgb, var(--surface) 92%, transparent); color: var(--muted); font: inherit; font-size: .72rem; font-weight: 800; cursor: pointer; }
+.math-reset:hover, .math-reset:focus-visible { border-color: var(--brand); color: var(--brand-strong); }
+.formula.c { top: calc(var(--intercept-y) - 30px); left: calc(var(--axis-x) + 16px); width: auto; height: auto; padding: 4px 9px; border-radius: 8px; background: var(--accent); color: #fff; font-size: .82rem; font-weight: 850; display: inline-flex; align-items: center; box-shadow: none; }
 
 /* Math card ambient animations */
 @keyframes slope-glow { 0%, 100% { opacity: 1; } 50% { opacity: 0.7; } }
@@ -143,8 +156,7 @@ h1 { margin-bottom: 20px; font-size: clamp(2.55rem, 7vw, 5.5rem); max-width: 11c
 @keyframes formula-float-b  { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-9px); } }
 @keyframes ydot-pulse { 0%, 100% { box-shadow: 0 0 0 5px color-mix(in srgb, var(--accent) 18%, transparent); } 50% { box-shadow: 0 0 0 13px color-mix(in srgb, var(--accent) 6%, transparent); } }
 
-.formula.a  { animation: formula-float-a  4.5s ease-in-out infinite; }
-.formula.b  { animation: formula-float-b  5.5s ease-in-out infinite 1.2s; }
+.math-card[data-math-interactive] .formula { animation: none; }
 
 .section { padding: 40px 0 72px; }
 .section-tinted { border-block: 1px solid var(--line); background: color-mix(in srgb, var(--surface-2) 66%, transparent); }

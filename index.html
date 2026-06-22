@@ -46,18 +46,20 @@
           <p class="hero-copy" data-i18n="heroCopy">I’m Mr. Mendez. This is our classroom hub for weekly assignments, course resources, and the support you need to keep moving forward.</p>
           <div class="hero-actions"><a class="button button-primary" href="#courses" data-i18n="findClass">Find your class</a><a class="button button-secondary" href="contact.html" data-i18n="contactMe">Contact Mr. Mendez</a></div>
         </div>
-        <div class="math-card reveal" aria-label="Slope-intercept form illustration">
-          <div class="math-grid"></div>
-          <div class="axis-x"></div>
-          <div class="axis-y"></div>
-          <div class="slope-line"></div>
-          <div class="rise-seg"></div>
-          <div class="run-seg"></div>
-          <div class="y-dot"></div>
-          <div class="p-dot"></div>
-          <span class="formula a">y = mx + b</span>
-          <span class="formula b">Δy / Δx</span>
-          <span class="formula c">b</span>
+        <div class="math-card reveal" data-math-interactive role="group" aria-label="Interactive slope-intercept form illustration" aria-describedby="math-interaction-hint">
+          <div class="math-grid" aria-hidden="true"></div>
+          <div class="axis-x" aria-hidden="true"></div>
+          <div class="axis-y" aria-hidden="true"></div>
+          <div class="slope-line" aria-hidden="true"></div>
+          <div class="rise-seg" aria-hidden="true"></div>
+          <div class="run-seg" aria-hidden="true"></div>
+          <button class="y-dot graph-handle" type="button" role="slider" aria-label="Y-intercept handle. Use the up and down arrow keys." aria-valuemin="-2" aria-valuemax="2" aria-valuenow="0"></button>
+          <button class="p-dot graph-handle" type="button" role="slider" aria-label="Slope handle. Use the up and down arrow keys." aria-valuemin="-1.25" aria-valuemax="1.25" aria-valuenow="0.75"></button>
+          <span class="formula a" data-equation>y = 0.75x + 0</span>
+          <span class="formula b" data-slope-readout>m = Δy / Δx = 0.75</span>
+          <span class="formula c" data-intercept-readout>b = 0</span>
+          <button class="math-reset" type="button" data-math-reset data-i18n="graphReset">Reset</button>
+          <span class="math-hint" id="math-interaction-hint" data-i18n="graphHint">Drag orange b or blue m. The equation updates.</span>
         </div>
       </div>
     </section>
